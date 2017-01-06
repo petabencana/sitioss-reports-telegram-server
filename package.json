@@ -1,0 +1,23 @@
+{
+  "name": "cognicity-reports-telegram",
+  "version": "0.0.1",
+  "description": "Telegram support for CogniCity GRASP",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urbanriskmap/cognicity-reports-telegram.git"
+  },
+  "author": "Tomas Holderness",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/urbanriskmap/cognicity-reports-telegram/issues"
+  },
+  "homepage": "https://github.com/urbanriskmap/cognicity-reports-telegram#readme",
+  "dependencies": {
+    "telegraf": "^3.6.4",
+    "dotenv": "^2.0.0"
+  }
+}
