@@ -2,7 +2,8 @@
 
 // External modules
 const Telegraf = require('telegraf'),
-      request = require('request');
+      request = require('request'),
+      pg = require('pg');
 require('dotenv').config({silent:true});
 
 // Telegraf bot
@@ -20,16 +21,32 @@ const options = {
   }
 }
 
+// GRASP operating regions
+const instance_regions = {
+  jbd: 'jakarta',
+  sby: 'surabaya',
+  bdg: 'bandung'
+}
+
+// Telegram language hack
 const langs = {
   '/banjir': 'id',
   '/flood': 'en'
 }
 
+// Replies to user
 const replies = {
-  'id': 'Hi! Laporan menggunakan link ini, terima kasih',
-  'en': 'Hi! Report using this link, thanks'
+  'id': 'Hi! Laporan menggunakan link ini, terima kasih.',
+  'en': 'Hi! Report using this link, thanks.'
 }
 
+// Confirmation message to user
+const confirmations = {
+  'id': 'Hi! Terima kasih atas laporan Anda. Aku sudah menaruhnya di peta.',
+  'en': "Hi! Thanks for your report. I've put it on the map."
+}
+
+// Function to get GRASP card from CogniCity API
 var get_card = function(ctx, callback){
 
   // Get language
@@ -38,8 +55,9 @@ var get_card = function(ctx, callback){
     var language = langs[ctx.update.message.text]
   }
 
+  // Form JSON request body
   var card_request = {
-    "username": ctx.from.id.toString(),
+    "username": ctx.from.id.toString(), //We use the numeric id as this allows telegram replies
     "network": "telegram",
     "language": language
   }
@@ -59,19 +77,56 @@ var get_card = function(ctx, callback){
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
-      callback(err, null);
+      callback(err, null); // Return error
     }
   });
 }
 
+// Function to watch for udpates to grasp.cards table, received status
+var watch_cards = function(callback){
+     // Connect to db
+     pg.connect(process.env.PG_CON, function(err, client, done){
+       if (err){
+         console.log("database err: " + err);
+         done();
+         callback( new Error('Database connection error') );
+         return;
+       }
+       // Return the listen notification
+       client.on('notification', function(msg) {
+         try{
+          console.log('Msg: ' + msg);
+          console.log('Payload: ' + msg.payload);
+          var notification = JSON.parse(msg.payload);
+          console.log('Parse successful');
+          if (notification.cards.network === 'telegram'){
+            console.log('Received card submission');
+            callback(null, notification.cards);
+          }
+         }
+         catch (e){
+           console.log('Error processing listen notification from database\n'+e);
+           callback(e);
 
+           return;
+         }
+       });
+
+       // Initiate the listen query
+       client.query("LISTEN watchers");
+     });
+}
+
+// start command
 app.command('start', (ctx) => {
   ctx.reply("Hi! Saya Bencana Bot.\n/banjir - laporan banjir ");
 });
 
+// report command
 app.command(['flood', 'banjir'], (ctx) => {
   console.log('Received flood report request');
 
+  // Get a card
   get_card(ctx, function(err, response){
     if (!err){
       console.log('Received card, reply to user');
@@ -84,5 +139,16 @@ app.command(['flood', 'banjir'], (ctx) => {
 });
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
+
+// Start telegram connection
 app.startPolling();
 console.log('App is polling Telegram API');
+
+// Start watcing for user reports
+watch_cards(function(err, report){
+  if (!err){
+    var reply = confirmations[report.language]
+    reply += ' ' + process.env.APP + instance_regions[report.report_impl_area] + '/' + report.report_id;
+    app.telegram.sendMessage(parseInt(report.username), reply);
+  }
+});
