@@ -13,3 +13,8 @@ Save a copy of sample.env as .env in local directory with appropriate credential
 #### Misc Notes
 - grasp "username" is actually Telegram user ID or conversation ID to allow replies in conversation
 - errors are logged to console, but not returned to user currently
+
+#### Bot commands
+`/report` issue report card in English
+`/laporan` issue report card in Indonesian
+`/start` issue initial text in Indonesian
