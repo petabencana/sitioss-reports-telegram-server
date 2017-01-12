@@ -11,7 +11,7 @@ const app = new Telegraf(process.env.BOT_TOKEN);
 
 // GRASP card
 const options = {
-  host: 'https://data-dev.petabencana.id',
+  host: 'http://localhost:8001',
   path: '/cards',
   method: 'POST',
   port: 80,
@@ -23,26 +23,21 @@ const options = {
 
 // GRASP operating regions
 const instance_regions = {
-  jbd: 'jakarta',
-  sby: 'surabaya',
-  bdg: 'bandung'
+  chn: 'chennai'
 }
 
 // Telegram language hack
 const langs = {
-  '/banjir': 'id',
   '/flood': 'en'
 }
 
 // Replies to user
 const replies = {
-  'id': 'Hi! Laporan menggunakan link ini, terima kasih.',
   'en': 'Hi! Report using this link, thanks.'
 }
 
 // Confirmation message to user
 const confirmations = {
-  'id': 'Hi! Terima kasih atas laporan Anda. Aku sudah menaruhnya di peta.',
   'en': "Hi! Thanks for your report. I've put it on the map."
 }
 
@@ -119,11 +114,11 @@ var watch_cards = function(callback){
 
 // start command
 app.command('start', (ctx) => {
-  ctx.reply("Hi! Saya Bencana Bot.\n/banjir - laporan banjir ");
+  ctx.reply("Hi! Flood Map Bot.\n/flood - Flood report ");
 });
 
 // report command
-app.command(['flood', 'banjir'], (ctx) => {
+app.command(['flood'], (ctx) => {
   console.log('Received flood report request');
 
   // Get a card
