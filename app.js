@@ -11,7 +11,7 @@ const app = new Telegraf(process.env.BOT_TOKEN);
 
 // GRASP card
 const options = {
-  host: 'https://data-dev.petabencana.id',
+  host: process.env.API_SERVER,
   path: '/cards',
   method: 'POST',
   port: 80,
