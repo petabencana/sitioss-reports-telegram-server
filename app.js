@@ -36,7 +36,7 @@ const langs = {
 
 // Replies to user
 const replies = {
-  'id': 'Hi! Laporan menggunakan link ini, terima kasih.',
+  'id': 'Hi! Laporkan menggunakan link ini. Terima kasih.',
   'en': 'Hi! Report using this link, thanks.'
 }
 
@@ -119,7 +119,7 @@ var watch_cards = function(callback){
 
 // start command
 app.command('start', (ctx) => {
-  ctx.reply("Hi! Saya Bencana Bot.\n/banjir - laporan banjir ");
+  ctx.reply("Hi! Saya BencanaBot.\nKetik /banjir untuk melaporkan banjir");
 });
 
 // report command
