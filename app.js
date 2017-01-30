@@ -3,8 +3,36 @@
 // External modules
 const Telegraf = require('telegraf'),
       request = require('request'),
+      logger = require('winston'),
+      config = require('config'),
       pg = require('pg');
-require('dotenv').config({silent:true});
+
+// Set the default logging level
+logger.level = config.LOG_LEVEL;
+
+// Check that log file directory can be written to
+try {
+	config.LOG_DIR !== '' && fs.accessSync(config.LOG_DIR, fs.W_OK);
+	logger.info(`Logging to ${config.LOG_DIR !== '' ? config.LOG_DIR : 'current working directory' }`);
+} catch(e) {
+	// If we cannot write to the desired directory then log in the current directory
+	logger.info(`Cannot log to '${config.LOG_DIR}', logging to current working directory instead`);
+	config.LOG_DIR = '';
+}
+
+// Configure the logger
+logger.add(logger.transports.File, {
+	filename: path.join(config.LOG_DIR, `${process.env.APP_NAME}.log`),
+	json: config.LOG_JSON, // Log in json or plain text
+	maxsize: config.LOG_MAX_FILE_SIZE, // Max size of each file
+	maxFiles: config.LOG_MAX_FILES, // Max number of files
+	level: config.LOG_LEVEL // Level of log messages
+})
+
+// If we are not in development and console logging has not been requested then remove it
+if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
+	logger.remove(logger.transports.Console);
+}
 
 // Telegraf bot
 const app = new Telegraf(process.env.BOT_TOKEN);
@@ -87,7 +115,7 @@ var watch_cards = function(callback){
      // Connect to db
      pg.connect(process.env.PG_CON, function(err, client, done){
        if (err){
-         console.log("database err: " + err);
+         logger.error("database err: " + err);
          done();
          callback( new Error('Database connection error') );
          return;
@@ -95,17 +123,17 @@ var watch_cards = function(callback){
        // Return the listen notification
        client.on('notification', function(msg) {
          try{
-          console.log('Msg: ' + msg);
-          console.log('Payload: ' + msg.payload);
+          logger.info('Msg: ' + msg);
+          logger.info('Payload: ' + msg.payload);
           var notification = JSON.parse(msg.payload);
-          console.log('Parse successful');
+          logger.info('Parse successful');
           if (notification.cards.network === 'telegram'){
-            console.log('Received card submission');
+            logger.info('Received card submission');
             callback(null, notification.cards);
           }
          }
          catch (e){
-           console.log('Error processing listen notification from database\n'+e);
+           logger.error('Error processing listen notification from database\n'+e);
            callback(e);
 
            return;
@@ -124,16 +152,16 @@ app.command('start', (ctx) => {
 
 // report command
 app.command(['flood', 'banjir'], (ctx) => {
-  console.log('Received flood report request');
+  logger.debug('Received flood report request');
 
   // Get a card
   get_card(ctx, function(err, response){
     if (!err){
-      console.log('Received card, reply to user');
+      logger.debug('Received card, reply to user');
       ctx.reply(response);
     }
     else {
-      console.log('Error getting card: ' + err);
+      logger.error('Error getting card: ' + err);
     }
   });
 });
@@ -142,7 +170,7 @@ app.command(['flood', 'banjir'], (ctx) => {
 
 // Start telegram connection
 app.startPolling();
-console.log('App is polling Telegram API');
+logger.info('App is polling Telegram API');
 
 // Start watcing for user reports
 watch_cards(function(err, report){
