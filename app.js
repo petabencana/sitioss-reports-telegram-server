@@ -4,8 +4,10 @@
 const Telegraf = require('telegraf'),
       request = require('request'),
       logger = require('winston'),
-      config = require('./config'),
       pg = require('pg');
+
+// Import config
+import config from './config';
 
 // Set the default logging level
 logger.level = config.LOG_LEVEL;
