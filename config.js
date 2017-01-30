@@ -9,3 +9,5 @@ var config = {
   APP_NAME: process.env.APP_NAME || 'cognicity-reports-telegram',
   LOG_MAX_FILES: process.env.LOG_MAX_FILES || 10
 }
+
+module.exports = config;
