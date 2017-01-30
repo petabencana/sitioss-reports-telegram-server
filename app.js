@@ -4,7 +4,7 @@
 const Telegraf = require('telegraf'),
       request = require('request'),
       logger = require('winston'),
-      config = require('config'),
+      config = require('./config'),
       pg = require('pg');
 
 // Set the default logging level
