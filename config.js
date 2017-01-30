@@ -1,6 +1,6 @@
-require('dotenv').config({silent:true})
+require('dotenv').config({silent:true});
 
-export default {
+var config = {
   LOG_CONSOLE: process.env.LOG_CONSOLE === 'true' || false,
   LOG_DIR: process.env.LOG_DIR || '',
   LOG_JSON: process.env.LOG_JSON === 'true' || false,
