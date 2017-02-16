@@ -68,7 +68,7 @@ var get_card = function(ctx, callback){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + process.env.CARD_PATH + body.cardId);
+      callback(null, replies[language] + '\n' + process.env.CARD_PATH + body.cardId + "/report");
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
