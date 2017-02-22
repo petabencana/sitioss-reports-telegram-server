@@ -19,35 +19,43 @@ const options = {
     'x-api-key': process.env.X_API_KEY,
     'Content-Type': 'application/json'
   }
-}
+};
 
 // GRASP operating regions
 const instance_regions = {
-  chn: 'chennai'
-}
+  jbd: 'jakarta',
+  sby: 'surabaya',
+  bdg: 'bandung'
+};
+
+// Commands as per disaster
+
 
 // Telegram language hack
 const langs = {
-  '/flood': 'en'
-}
+  '/flood': 'en',
+  '/hurricane': 'en',
+  '/earthquake': 'en',
+  '/report': 'en'
+};
 
 // Replies to user
 const replies = {
   'en': 'Hi! Report using this link, thanks.'
-}
+};
 
 // Confirmation message to user
 const confirmations = {
   'en': "Hi! Thanks for your report. I've put it on the map."
-}
+};
 
 // Function to get GRASP card from CogniCity API
-var get_card = function(ctx, callback){
+var get_card = function(ctx, command, callback) {
 
   // Get language
   var language = process.env.DEFAULT_LANG;
   if (ctx.update.message.text in langs){
-    var language = langs[ctx.update.message.text]
+    language = langs[ctx.update.message.text];
   }
 
   // Form JSON request body
@@ -55,7 +63,7 @@ var get_card = function(ctx, callback){
     "username": ctx.from.id.toString(), //We use the numeric id as this allows telegram replies
     "network": "telegram",
     "language": language
-  }
+  };
 
   // Get a card
   request({
@@ -68,17 +76,17 @@ var get_card = function(ctx, callback){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + process.env.CARD_PATH + body.cardId + "/report");
+      callback(null, replies[language] + '\n' + process.env.CARD_PATH + command + '/' + body.cardId + "/report");
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
       callback(err, null); // Return error
     }
   });
-}
+};
 
 // Function to watch for udpates to grasp.cards table, received status
-var watch_cards = function(callback){
+var watch_cards = function(callback) {
      // Connect to db
      pg.connect(process.env.PG_CON, function(err, client, done){
        if (err){
@@ -110,11 +118,11 @@ var watch_cards = function(callback){
        // Initiate the listen query
        client.query("LISTEN watchers");
      });
-}
+};
 
 // start command
 app.command('start', (ctx) => {
-  ctx.reply("Hi! Flood Map Bot.\n/flood - Flood report ");
+  ctx.reply("Hi! Risk Map Bot.\n/report - Post disaster reporting \n/flood - Flood report \n/earthquake - Post earthquake report \n/hurricane - Post hurricane report");
 });
 
 // report command
@@ -122,7 +130,7 @@ app.command(['flood'], (ctx) => {
   console.log('Received flood report request');
 
   // Get a card
-  get_card(ctx, function(err, response){
+  get_card(ctx, 'flood' ,function(err, response) {
     if (!err){
       console.log('Received card, reply to user');
       ctx.reply(response);
@@ -132,8 +140,55 @@ app.command(['flood'], (ctx) => {
     }
   });
 });
-// emergi!
-//app.on('sticker', (ctx) => ctx.reply('👍'));
+
+// report command
+app.command(['hurricane'], (ctx) => {
+  console.log('Received hurricane report request');
+
+  // Get a card
+  get_card(ctx, 'hurricane' ,function(err, response) {
+    if (!err){
+      console.log('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      console.log('Error getting card: ' + err);
+    }
+  });
+});
+
+// report command
+app.command(['earthquake'], (ctx) => {
+  console.log('Received earthquake report request');
+
+  // Get a card
+  get_card(ctx, 'earthquake' ,function(err, response) {
+    if (!err){
+      console.log('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      console.log('Error getting card: ' + err);
+    }
+  });
+});
+
+// report command
+app.command(['report'], (ctx) => {
+  console.log('Received FEMA report request');
+
+  // Get a card
+  get_card(ctx, 'report' ,function(err, response) {
+    if (!err){
+      console.log('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      console.log('Error getting card: ' + err);
+    }
+  });
+});
+
 
 // Start telegram connection
 app.startPolling();
@@ -141,8 +196,8 @@ console.log('App is polling Telegram API');
 
 // Start watcing for user reports
 watch_cards(function(err, report){
-  if (!err){
-    var reply = confirmations[report.language]
+  if (!err) {
+    var reply = confirmations[report.language];
     reply += ' ' + process.env.APP + instance_regions[report.report_impl_area] + '/' + report.report_id;
     app.telegram.sendMessage(parseInt(report.username), reply);
   }
