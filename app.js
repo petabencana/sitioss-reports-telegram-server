@@ -23,7 +23,7 @@ try {
 
 // Configure the logger
 logger.add(logger.transports.File, {
-	filename: path.join(config.LOG_DIR, `${process.env.APP_NAME}.log`),
+	filename: path.join(config.LOG_DIR, `${config.APP_NAME}.log`),
 	json: config.LOG_JSON, // Log in json or plain text
 	maxsize: config.LOG_MAX_FILE_SIZE, // Max size of each file
 	maxFiles: config.LOG_MAX_FILES, // Max number of files
@@ -36,16 +36,16 @@ if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
 }
 
 // Telegraf bot
-const app = new Telegraf(process.env.BOT_TOKEN);
+const app = new Telegraf(config.BOT_TOKEN);
 
 // GRASP card
 const options = {
-  host: process.env.API_SERVER,
+  host: config.API_SERVER,
   path: '/cards',
   method: 'POST',
   port: 80,
   headers: {
-    'x-api-key': process.env.X_API_KEY,
+    'x-api-key': config.X_API_KEY,
     'Content-Type': 'application/json'
   }
 }
@@ -79,7 +79,7 @@ const confirmations = {
 var get_card = function(ctx, callback){
 
   // Get language
-  var language = process.env.DEFAULT_LANG;
+  var language = config.DEFAULT_LANG;
   if (ctx.update.message.text in langs){
     var language = langs[ctx.update.message.text]
   }
@@ -102,7 +102,7 @@ var get_card = function(ctx, callback){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + process.env.CARD_PATH + 'flood/' + body.cardId + '/report');
+      callback(null, replies[language] + '\n' + config.CARD_PATH + 'flood/' + body.cardId);
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
@@ -114,7 +114,7 @@ var get_card = function(ctx, callback){
 // Function to watch for udpates to grasp.cards table, received status
 var watch_cards = function(callback){
      // Connect to db
-     pg.connect(process.env.PG_CON, function(err, client, done){
+     pg.connect(config.PG_CON, function(err, client, done){
        if (err){
          logger.error("database err: " + err);
          done();
@@ -177,7 +177,7 @@ logger.info('App is polling Telegram API');
 watch_cards(function(err, report){
   if (!err){
     var reply = confirmations[report.language]
-    reply += ' ' + process.env.APP + instance_regions[report.report_impl_area] + '/' + report.report_id;
+    reply += ' ' + config.MAP_PATH + instance_regions[report.report_impl_area] + '/' + report.report_id;
     app.telegram.sendMessage(parseInt(report.username), reply);
   }
 });
