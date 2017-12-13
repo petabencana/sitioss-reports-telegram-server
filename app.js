@@ -54,7 +54,8 @@ const options = {
 const instance_regions = {
   jbd: 'jakarta',
   sby: 'surabaya',
-  bdg: 'bandung'
+  bdg: 'bandung',
+  srg: 'semarang'
 }
 
 // Telegram language hack
