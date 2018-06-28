@@ -1,3 +1,7 @@
+## DEPRECATED
+
+New Telegram chatbots should use the AWS Lambda functions: https://github.com/urbanriskmap/cognicity-reports-telegram-lambda
+
 # cognicity-reports-telegram
 Telegram support for CogniCity GRASP
 
