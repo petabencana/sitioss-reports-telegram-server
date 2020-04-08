@@ -157,7 +157,7 @@ app.command('menu', (ctx) => {
     .keyboard([
       ['Flood', 'Forest Fire'], // Row1 with 2 buttons
       ['Earthquake', 'Haze'], // Row2 with 2 buttons
-      ['Volcano', 'haze'] // Row3 with 3 buttons
+      ['Volcano', 'Extreme Wind'] // Row3 with 3 buttons
     ])
     .oneTime()
     .resize()
@@ -171,67 +171,42 @@ app.command(['flood', 'banjir'], (ctx) => {
 });
 
 app.command(['fire',], (ctx) => {
-  logger.debug('Received fire report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  }, 'fire');
+  replyCardLink(ctx, 'fire');
 });
 
 app.command(['earthquake'], (ctx) => {
-  logger.debug('Received earthquake report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  }, 'earthquake');
+  replyCardLink(ctx, 'earthquake');
 });
 
 app.command(['haze'], (ctx) => {
-  logger.debug('Received haze report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  }, 'haze');
+  replyCardLink(ctx, 'haze');
 });
 
 app.command(['volcano'], (ctx) => {
-  logger.debug('Received volcano report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  }, 'volcano');
+  replyCardLink(ctx, 'volcano');
+});
+app.command(['wind'], (ctx) => {
+  replyCardLink(ctx, 'wind');
 });
 
 app.hears('Flood', (ctx) => {
   return replyCardLink(ctx, 'flood')
+})
+
+app.hears('Earthquake', (ctx) => {
+  return replyCardLink(ctx, 'earthquake')
+})
+app.hears('Forest Fire', (ctx) => {
+  return replyCardLink(ctx, 'fire')
+})
+app.hears('Haze', (ctx) => {
+  return replyCardLink(ctx, 'haze')
+})
+app.hears('Volcano', (ctx) => {
+  return replyCardLink(ctx, 'volcano')
+})
+app.hears('Extreme Wind', (ctx) => {
+  return replyCardLink(ctx, 'wind')
 })
 
 // emergi!
