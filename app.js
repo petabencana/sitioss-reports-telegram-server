@@ -153,32 +153,21 @@ app.command(['start', 'mulai'], (ctx) => {
 });
 
 app.command('menu', (ctx) => {
-  return ctx.reply('Custom buttons keyboard', Markup
-	.keyboard([
-	  ['Flood', 'Forest Fire'], // Row1 with 2 buttons
-	  ['Earthquake', 'Haze'], // Row2 with 2 buttons
-	  ['Volcano', 'haze'] // Row3 with 3 buttons
-	])
-	.oneTime()
-	.resize()
-        .extra()
+  return ctx.reply('Please select disaster to report', Markup
+    .keyboard([
+      ['Flood', 'Forest Fire'], // Row1 with 2 buttons
+      ['Earthquake', 'Haze'], // Row2 with 2 buttons
+      ['Volcano', 'haze'] // Row3 with 3 buttons
+    ])
+    .oneTime()
+    .resize()
+    .extra()
   )
 })
 
 // report command
 app.command(['flood', 'banjir'], (ctx) => {
-  logger.debug('Received flood report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  }, 'flood');
+  replyCardLink(ctx, 'flood');
 });
 
 app.command(['fire',], (ctx) => {
@@ -241,6 +230,10 @@ app.command(['volcano'], (ctx) => {
   }, 'volcano');
 });
 
+app.hears('Flood', (ctx) => {
+  return replyCardLink(ctx, 'flood')
+})
+
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
 
@@ -256,3 +249,18 @@ watch_cards(function(err, report){
     app.telegram.sendMessage(parseInt(report.username), reply);
   }
 });
+
+function replyCardLink(ctx, disasterType) {
+  logger.debug('Received report request:'+disasterType);
+  // Get a card
+  get_card(ctx, function (err, response) {
+    if (!err) {
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, disasterType);
+}
+
