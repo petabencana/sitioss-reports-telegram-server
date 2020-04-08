@@ -6,8 +6,8 @@ const Telegraf = require('telegraf'),
       logger = require('winston'),
       path = require('path'),
       config = require('./config'),
-      pg = require('pg');
-
+      pg = require('pg'),
+      { Extra, Markup } = require('telegraf');
 // Set the default logging level
 logger.level = config.LOG_LEVEL;
 
@@ -31,9 +31,9 @@ logger.add(logger.transports.File, {
 })
 
 // If we are not in development and console logging has not been requested then remove it
-if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
-	logger.remove(logger.transports.Console);
-}
+//if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
+//	logger.remove(logger.transports.Console);
+//}
 
 // Telegraf bot
 const app = new Telegraf(config.BOT_TOKEN);
@@ -148,9 +148,22 @@ var watch_cards = function(callback){
 }
 
 // start command
-app.command('start', (ctx) => {
+app.command(['start', 'mulai'], (ctx) => {
   ctx.reply("Hi! Saya BencanaBot.\nKetik /banjir untuk melaporkan banjir");
 });
+
+app.command('menu', (ctx) => {
+  return ctx.reply('Custom buttons keyboard', Markup
+	.keyboard([
+	  ['🔍 Search', '😎 Popular'], // Row1 with 2 buttons
+	  ['☸ Setting', '📞 Feedback'], // Row2 with 2 buttons
+	  ['📢 Ads', '⭐️ Rate us', '👥 Share'] // Row3 with 3 buttons
+	])
+	.oneTime()
+	.resize()
+        .extra()
+  )
+})
 
 // report command
 app.command(['flood', 'banjir'], (ctx) => {
