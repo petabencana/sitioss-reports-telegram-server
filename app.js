@@ -77,7 +77,7 @@ const confirmations = {
 }
 
 // Function to get GRASP card from CogniCity API
-var get_card = function(ctx, callback){
+var get_card = function(ctx, callback, disasterType){
 
   // Get language
   var language = config.DEFAULT_LANG;
@@ -103,7 +103,7 @@ var get_card = function(ctx, callback){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + config.CARD_PATH + 'flood/' + body.cardId);
+      callback(null, replies[language] + '\n' + config.CARD_PATH + body.cardId + '/' + disasterType );
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
@@ -178,8 +178,69 @@ app.command(['flood', 'banjir'], (ctx) => {
     else {
       logger.error('Error getting card: ' + err);
     }
-  });
+  }, 'flood');
 });
+
+app.command(['fire',], (ctx) => {
+  logger.debug('Received fire report request');
+
+  // Get a card
+  get_card(ctx, function(err, response){
+    if (!err){
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, 'fire');
+});
+
+app.command(['earthquake'], (ctx) => {
+  logger.debug('Received earthquake report request');
+
+  // Get a card
+  get_card(ctx, function(err, response){
+    if (!err){
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, 'earthquake');
+});
+
+app.command(['haze'], (ctx) => {
+  logger.debug('Received haze report request');
+
+  // Get a card
+  get_card(ctx, function(err, response){
+    if (!err){
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, 'haze');
+});
+
+app.command(['volcano'], (ctx) => {
+  logger.debug('Received volcano report request');
+
+  // Get a card
+  get_card(ctx, function(err, response){
+    if (!err){
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, 'volcano');
+});
+
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
 
