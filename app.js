@@ -148,8 +148,11 @@ var watch_cards = function(callback){
 }
 
 // start command
-app.command(['start', 'mulai'], (ctx) => {
-  ctx.reply("Hi! Saya BencanaBot.\nKetik /banjir untuk melaporkan banjir");
+app.command(['start'], (ctx) => {
+  ctx.reply("Hi! I’m Disaster Bot! Click /menu to select the disaster you would like to report");
+});
+app.command(['mulai'], (ctx) => {
+  ctx.reply("Hi! Saya Bencana Bot! Klik /menu untuk memilih bencana yang ingin kamu laporkan");
 });
 
 app.command('menu', (ctx) => {
