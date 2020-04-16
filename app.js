@@ -160,7 +160,20 @@ app.command('menu', (ctx) => {
     .keyboard([
       ['Flood', 'Forest Fire'], // Row1 with 2 buttons
       ['Earthquake', 'Haze'], // Row2 with 2 buttons
-      ['Volcano', 'Extreme Wind'] // Row3 with 3 buttons
+      ['Volcano', 'Extreme Wind'] // Row3 with 2 buttons
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
+
+app.command('menubi', (ctx) => {
+  return ctx.reply('Please select disaster to report', Markup
+    .keyboard([
+      ['Banjir', 'Kebakaran Hutan'], // Row1 with 2 buttons
+      ['Gempa', 'Kabut Asap'], // Row2 with 2 buttons
+      ['Gunung Api', 'Angin Kencang'] // Row3 with 2 buttons
     ])
     .oneTime()
     .resize()
@@ -192,23 +205,23 @@ app.command(['wind'], (ctx) => {
   replyCardLink(ctx, 'wind');
 });
 
-app.hears('Flood', (ctx) => {
+app.hears(['Flood', 'Banjir'], (ctx) => {
   return replyCardLink(ctx, 'flood')
 })
 
-app.hears('Earthquake', (ctx) => {
+app.hears(['Earthquake', 'Gempa'], (ctx) => {
   return replyCardLink(ctx, 'earthquake')
 })
-app.hears('Forest Fire', (ctx) => {
+app.hears(['Forest Fire', 'Kebakaran Hutan'], (ctx) => {
   return replyCardLink(ctx, 'fire')
 })
-app.hears('Haze', (ctx) => {
+app.hears(['Haze', 'Kabut Asap'], (ctx) => {
   return replyCardLink(ctx, 'haze')
 })
-app.hears('Volcano', (ctx) => {
+app.hears(['Volcano', 'Gunung Api'], (ctx) => {
   return replyCardLink(ctx, 'volcano')
 })
-app.hears('Extreme Wind', (ctx) => {
+app.hears(['Extreme Wind', 'Angin Kencang'], (ctx) => {
   return replyCardLink(ctx, 'wind')
 })
 
