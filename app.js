@@ -158,9 +158,9 @@ app.command(['mulai'], (ctx) => {
 app.command('menu', (ctx) => {
   return ctx.reply('Please select disaster to report', Markup
     .keyboard([
-      ['Flood', 'Forest Fire'], // Row1 with 2 buttons
-      ['Earthquake', 'Haze'], // Row2 with 2 buttons
-      ['Volcano', 'Extreme Wind'] // Row3 with 2 buttons
+      ['Flood'], // Row1 with 2 buttons
+      ['Earthquake'], // Row2 with 2 buttons
+      // ['Volcano', 'Extreme Wind'] // Row3 with 2 buttons
     ])
     .oneTime()
     .resize()
@@ -171,9 +171,9 @@ app.command('menu', (ctx) => {
 app.command('menubi', (ctx) => {
   return ctx.reply('Please select disaster to report', Markup
     .keyboard([
-      ['Banjir', 'Kebakaran Hutan'], // Row1 with 2 buttons
-      ['Gempa', 'Kabut Asap'], // Row2 with 2 buttons
-      ['Gunung Api', 'Angin Kencang'] // Row3 with 2 buttons
+      ['Banjir'], // Row1 with 2 buttons
+      ['Gempa'], // Row2 with 2 buttons
+      // ['Gunung Api', 'Angin Kencang'] // Row3 with 2 buttons
     ])
     .oneTime()
     .resize()
@@ -186,24 +186,24 @@ app.command(['flood', 'banjir'], (ctx) => {
   replyCardLink(ctx, 'flood');
 });
 
-app.command(['fire',], (ctx) => {
-  replyCardLink(ctx, 'fire');
-});
+// app.command(['fire',], (ctx) => {
+//   replyCardLink(ctx, 'fire');
+// });
 
 app.command(['earthquake'], (ctx) => {
   replyCardLink(ctx, 'earthquake');
 });
 
-app.command(['haze'], (ctx) => {
-  replyCardLink(ctx, 'haze');
-});
+// app.command(['haze'], (ctx) => {
+//   replyCardLink(ctx, 'haze');
+// });
 
-app.command(['volcano'], (ctx) => {
-  replyCardLink(ctx, 'volcano');
-});
-app.command(['wind'], (ctx) => {
-  replyCardLink(ctx, 'wind');
-});
+// app.command(['volcano'], (ctx) => {
+//   replyCardLink(ctx, 'volcano');
+// });
+// app.command(['wind'], (ctx) => {
+//   replyCardLink(ctx, 'wind');
+// });
 
 app.hears(['Flood', 'Banjir'], (ctx) => {
   return replyCardLink(ctx, 'flood')
@@ -212,18 +212,18 @@ app.hears(['Flood', 'Banjir'], (ctx) => {
 app.hears(['Earthquake', 'Gempa'], (ctx) => {
   return replyCardLink(ctx, 'earthquake')
 })
-app.hears(['Forest Fire', 'Kebakaran Hutan'], (ctx) => {
-  return replyCardLink(ctx, 'fire')
-})
-app.hears(['Haze', 'Kabut Asap'], (ctx) => {
-  return replyCardLink(ctx, 'haze')
-})
-app.hears(['Volcano', 'Gunung Api'], (ctx) => {
-  return replyCardLink(ctx, 'volcano')
-})
-app.hears(['Extreme Wind', 'Angin Kencang'], (ctx) => {
-  return replyCardLink(ctx, 'wind')
-})
+// app.hears(['Forest Fire', 'Kebakaran Hutan'], (ctx) => {
+//   return replyCardLink(ctx, 'fire')
+// })
+// app.hears(['Haze', 'Kabut Asap'], (ctx) => {
+//   return replyCardLink(ctx, 'haze')
+// })
+// app.hears(['Volcano', 'Gunung Api'], (ctx) => {
+//   return replyCardLink(ctx, 'volcano')
+// })
+// app.hears(['Extreme Wind', 'Angin Kencang'], (ctx) => {
+//   return replyCardLink(ctx, 'wind')
+// })
 
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
