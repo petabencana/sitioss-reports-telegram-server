@@ -152,7 +152,7 @@ app.command(['start'], (ctx) => {
   ctx.reply("Hi! I’m Disaster Bot! Click /menu to select the disaster you would like to report");
 });
 app.command(['mulai'], (ctx) => {
-  ctx.reply("Hi! Saya Bencana Bot! Klik /menu untuk memilih bencana yang ingin kamu laporkan");
+  ctx.reply("Hai! Saya Bencana Bot! Klik /menu untuk memilih bencana yang ingin kamu laporkan");
 });
 
 app.command('menu', (ctx) => {
@@ -169,7 +169,7 @@ app.command('menu', (ctx) => {
 })
 
 app.command('menubi', (ctx) => {
-  return ctx.reply('Please select disaster to report', Markup
+  return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
     .keyboard([
       ['Banjir'], // Row1 with 2 buttons
       ['Gempa'], // Row2 with 2 buttons
@@ -190,7 +190,7 @@ app.command(['flood', 'banjir'], (ctx) => {
 //   replyCardLink(ctx, 'fire');
 // });
 
-app.command(['earthquake'], (ctx) => {
+app.command(['earthquake', 'gempa'], (ctx) => {
   replyCardLink(ctx, 'earthquake');
 });
 
