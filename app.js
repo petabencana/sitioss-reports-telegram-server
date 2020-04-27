@@ -149,13 +149,13 @@ var watch_cards = function(callback){
 
 // start command
 app.command(['start'], (ctx) => {
-  ctx.reply("Hi! I’m Disaster Bot! Click /menu to select the disaster you would like to report");
+  ctx.reply("Hi! I’m Disaster Bot! Click /report to select the disaster you would like to report");
 });
 app.command(['mulai'], (ctx) => {
-  ctx.reply("Hai! Saya Bencana Bot! Klik /menu untuk memilih bencana yang ingin kamu laporkan");
+  ctx.reply("Hai! Saya Bencana Bot! Klik /laporkan untuk memilih bencana yang ingin kamu laporkan");
 });
 
-app.command('menu', (ctx) => {
+app.command('report', (ctx) => {
   return ctx.reply('Please select disaster to report', Markup
     .keyboard([
       ['Flood'], // Row1 with 2 buttons
@@ -168,7 +168,7 @@ app.command('menu', (ctx) => {
   )
 })
 
-app.command('menubi', (ctx) => {
+app.command('laporkan', (ctx) => {
   return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
     .keyboard([
       ['Banjir'], // Row1 with 2 buttons
