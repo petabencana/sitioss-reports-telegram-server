@@ -77,19 +77,19 @@ const confirmations = {
 }
 
 // Function to get GRASP card from CogniCity API
-var get_card = function(ctx, callback, disasterType){
+var get_card = function(ctx, lang, callback, disasterType){
 
   // Get language
-  var language = config.DEFAULT_LANG;
-  if (ctx.update.message.text in langs){
-    var language = langs[ctx.update.message.text]
-  }
+  // var language = config.DEFAULT_LANG;
+  // if (ctx.update.message.text in langs){
+  //   var language = langs[ctx.update.message.text]
+  // }
 
   // Form JSON request body
   var card_request = {
     "username": ctx.from.id.toString(), //We use the numeric id as this allows telegram replies
     "network": "telegram",
-    "language": language
+    "language": lang
   }
 
   // Get a card
@@ -103,7 +103,7 @@ var get_card = function(ctx, callback, disasterType){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + config.CARD_PATH + body.cardId + '/' + disasterType );
+      callback(null, replies[lang] + '\n' + config.CARD_PATH + body.cardId + '/' + disasterType );
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
@@ -182,16 +182,24 @@ app.command('laporkan', (ctx) => {
 })
 
 // report command
-app.command(['flood', 'banjir'], (ctx) => {
-  replyCardLink(ctx, 'flood');
+app.command(['flood'], (ctx) => {
+  replyCardLink(ctx, 'flood', 'en');
+});
+
+app.command(['banjir'], (ctx) => {
+  replyCardLink(ctx, 'flood', 'id');
 });
 
 // app.command(['fire',], (ctx) => {
 //   replyCardLink(ctx, 'fire');
 // });
 
-app.command(['earthquake', 'gempa'], (ctx) => {
-  replyCardLink(ctx, 'earthquake');
+app.command(['earthquake'], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'en');
+});
+
+app.command(['gempa'], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'id');
 });
 
 // app.command(['haze'], (ctx) => {
@@ -205,12 +213,20 @@ app.command(['earthquake', 'gempa'], (ctx) => {
 //   replyCardLink(ctx, 'wind');
 // });
 
-app.hears(['Flood', 'Banjir'], (ctx) => {
-  return replyCardLink(ctx, 'flood')
+app.hears(['Flood'], (ctx) => {
+  return replyCardLink(ctx, 'flood', 'en')
 })
 
-app.hears(['Earthquake', 'Gempa'], (ctx) => {
-  return replyCardLink(ctx, 'earthquake')
+app.hears(['Banjir'], (ctx) => {
+  return replyCardLink(ctx, 'flood', 'id')
+})
+
+app.hears(['Earthquake'], (ctx) => {
+  return replyCardLink(ctx, 'earthquake', 'en')
+})
+
+app.hears(['Gempa'], (ctx) => {
+  return replyCardLink(ctx, 'earthquake', 'id')
 })
 // app.hears(['Forest Fire', 'Kebakaran Hutan'], (ctx) => {
 //   return replyCardLink(ctx, 'fire')
@@ -241,10 +257,10 @@ watch_cards(function(err, report){
   }
 });
 
-function replyCardLink(ctx, disasterType) {
+function replyCardLink(ctx, disasterType, lang) {
   logger.debug('Received report request:'+disasterType);
   // Get a card
-  get_card(ctx, function (err, response) {
+  get_card(ctx, lang, function (err, response) {
     if (!err) {
       logger.debug('Received card, reply to user');
       ctx.reply(response);
