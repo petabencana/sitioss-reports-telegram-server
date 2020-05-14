@@ -6,8 +6,8 @@ const Telegraf = require('telegraf'),
       logger = require('winston'),
       path = require('path'),
       config = require('./config'),
-      pg = require('pg');
-
+      pg = require('pg'),
+      { Extra, Markup } = require('telegraf');
 // Set the default logging level
 logger.level = config.LOG_LEVEL;
 
@@ -31,9 +31,9 @@ logger.add(logger.transports.File, {
 })
 
 // If we are not in development and console logging has not been requested then remove it
-if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
-	logger.remove(logger.transports.Console);
-}
+//if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
+//	logger.remove(logger.transports.Console);
+//}
 
 // Telegraf bot
 const app = new Telegraf(config.BOT_TOKEN);
@@ -77,19 +77,19 @@ const confirmations = {
 }
 
 // Function to get GRASP card from CogniCity API
-var get_card = function(ctx, callback){
+var get_card = function(ctx, lang, callback, disasterType){
 
   // Get language
-  var language = config.DEFAULT_LANG;
-  if (ctx.update.message.text in langs){
-    var language = langs[ctx.update.message.text]
-  }
+  // var language = config.DEFAULT_LANG;
+  // if (ctx.update.message.text in langs){
+  //   var language = langs[ctx.update.message.text]
+  // }
 
   // Form JSON request body
   var card_request = {
     "username": ctx.from.id.toString(), //We use the numeric id as this allows telegram replies
     "network": "telegram",
-    "language": language
+    "language": lang
   }
 
   // Get a card
@@ -103,7 +103,7 @@ var get_card = function(ctx, callback){
 
   }, function(error, response, body){
     if (!error && response.statusCode === 200){
-      callback(null, replies[language] + '\n' + config.CARD_PATH + 'flood/' + body.cardId);
+      callback(null, replies[lang] + '\n' + config.CARD_PATH + body.cardId + '/' + disasterType );
     }
     else {
       var err = 'Error getting card: ' + JSON.stringify(error) + JSON.stringify(response);
@@ -148,25 +148,99 @@ var watch_cards = function(callback){
 }
 
 // start command
-app.command('start', (ctx) => {
-  ctx.reply("Hi! Saya BencanaBot.\nKetik /banjir untuk melaporkan banjir");
+app.command(['start'], (ctx) => {
+  ctx.reply("Hi! I’m Disaster Bot! Click /report to select the disaster you would like to report");
 });
+app.command(['mulai'], (ctx) => {
+  ctx.reply("Hai! Saya Bencana Bot! Klik /laporkan untuk memilih bencana yang ingin kamu laporkan");
+});
+
+app.command('report', (ctx) => {
+  return ctx.reply('Please select disaster to report', Markup
+    .keyboard([
+      ['Flood'], // Row1 with 2 buttons
+      ['Earthquake'], // Row2 with 2 buttons
+      // ['Volcano', 'Extreme Wind'] // Row3 with 2 buttons
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
+
+app.command('laporkan', (ctx) => {
+  return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
+    .keyboard([
+      ['Banjir'], // Row1 with 2 buttons
+      ['Gempa'], // Row2 with 2 buttons
+      // ['Gunung Api', 'Angin Kencang'] // Row3 with 2 buttons
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
 
 // report command
-app.command(['flood', 'banjir'], (ctx) => {
-  logger.debug('Received flood report request');
-
-  // Get a card
-  get_card(ctx, function(err, response){
-    if (!err){
-      logger.debug('Received card, reply to user');
-      ctx.reply(response);
-    }
-    else {
-      logger.error('Error getting card: ' + err);
-    }
-  });
+app.command(['flood'], (ctx) => {
+  replyCardLink(ctx, 'flood', 'en');
 });
+
+app.command(['banjir'], (ctx) => {
+  replyCardLink(ctx, 'flood', 'id');
+});
+
+// app.command(['fire',], (ctx) => {
+//   replyCardLink(ctx, 'fire');
+// });
+
+app.command(['earthquake'], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'en');
+});
+
+app.command(['gempa'], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'id');
+});
+
+// app.command(['haze'], (ctx) => {
+//   replyCardLink(ctx, 'haze');
+// });
+
+// app.command(['volcano'], (ctx) => {
+//   replyCardLink(ctx, 'volcano');
+// });
+// app.command(['wind'], (ctx) => {
+//   replyCardLink(ctx, 'wind');
+// });
+
+app.hears(['Flood'], (ctx) => {
+  return replyCardLink(ctx, 'flood', 'en')
+})
+
+app.hears(['Banjir'], (ctx) => {
+  return replyCardLink(ctx, 'flood', 'id')
+})
+
+app.hears(['Earthquake'], (ctx) => {
+  return replyCardLink(ctx, 'earthquake', 'en')
+})
+
+app.hears(['Gempa'], (ctx) => {
+  return replyCardLink(ctx, 'earthquake', 'id')
+})
+// app.hears(['Forest Fire', 'Kebakaran Hutan'], (ctx) => {
+//   return replyCardLink(ctx, 'fire')
+// })
+// app.hears(['Haze', 'Kabut Asap'], (ctx) => {
+//   return replyCardLink(ctx, 'haze')
+// })
+// app.hears(['Volcano', 'Gunung Api'], (ctx) => {
+//   return replyCardLink(ctx, 'volcano')
+// })
+// app.hears(['Extreme Wind', 'Angin Kencang'], (ctx) => {
+//   return replyCardLink(ctx, 'wind')
+// })
+
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
 
@@ -182,3 +256,18 @@ watch_cards(function(err, report){
     app.telegram.sendMessage(parseInt(report.username), reply);
   }
 });
+
+function replyCardLink(ctx, disasterType, lang) {
+  logger.debug('Received report request:'+disasterType);
+  // Get a card
+  get_card(ctx, lang, function (err, response) {
+    if (!err) {
+      logger.debug('Received card, reply to user');
+      ctx.reply(response);
+    }
+    else {
+      logger.error('Error getting card: ' + err);
+    }
+  }, disasterType);
+}
+
