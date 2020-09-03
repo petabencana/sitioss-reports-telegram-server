@@ -60,20 +60,20 @@ const instance_regions = {
 
 // Telegram language hack
 const langs = {
-  '/banjir': 'id',
+  '/baha': 'tl',
   '/flood': 'en'
 }
 
 // Replies to user
 const replies = {
-  'id': 'Hi! Laporkan menggunakan link ini. Terima kasih.',
-  'en': 'Hi! Report using this link, thanks.'
+  'tl': 'Hi! Paki-ulat ang kalamidad sa iyong lugar gamit ang link na ito. Salamat!',
+  'en': 'Hi! Please report the disaster in your area using this link. Thank you!'
 }
 
 // Confirmation message to user
 const confirmations = {
-  'id': 'Hi! Terima kasih atas laporan Anda. Aku sudah menaruhnya di peta.',
-  'en': "Hi! Thanks for your report. I've put it on the map."
+  'tl': 'Salamat sa iyong ulat! Tignan at ibahagi ang iyong ulat gamit ang link na ito! #ReduceRiskTogether',
+  'en': "Thank you for your report! View and share your report using this link! #ReduceRiskTogether"
 }
 
 // Function to get GRASP card from CogniCity API
@@ -149,18 +149,16 @@ var watch_cards = function(callback){
 
 // start command
 app.command(['start'], (ctx) => {
-  ctx.reply("Hai! Saya Bencana Bot! Klik /laporkan untuk memilih bencana yang ingin kamu laporkan. Hi! I'm Disaster Bot! Click /report to select the disaster you would like to report");
+  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin and /menu upang piliin ang kalamidad na nais mong iulat. How are you? I’m Disaster Bot! Click /menu to select the disaster you would like to report.");
 });
 app.command(['mulai'], (ctx) => {
-  ctx.reply("Hai! Saya Bencana Bot! Klik /laporkan untuk memilih bencana yang ingin kamu laporkan. Hi! I'm Disaster Bot! Click /report to select the disaster you would like to report");
+  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin and /menu upang piliin ang kalamidad na nais mong iulat. How are you? I’m Disaster Bot! Click /menu to select the disaster you would like to report.");
 });
 
 app.command('report', (ctx) => {
   return ctx.reply('Please select disaster to report', Markup
     .keyboard([
-      ['Flood', 'Forest Fire', ],
-      ['Earthquake', 'Haze', ],
-      ['Volcano', 'Extreme Wind']
+      ['Flood'],
     ])
     .oneTime()
     .resize()
@@ -171,9 +169,7 @@ app.command('report', (ctx) => {
 app.command('laporkan', (ctx) => {
   return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
     .keyboard([
-      ['Banjir', 'Kebakaran Hutan'], // Row1 with 2 buttons
-      ['Gempa', 'Kabut Asap'], // Row2 with 2 buttons
-      ['Gunung Api', 'Angin Kencang'] // Row3 with 2 buttons
+      ['Baha'], // Row1 with 2 buttons
     ])
     .oneTime()
     .resize()
@@ -186,8 +182,8 @@ app.command(['flood'], (ctx) => {
   replyCardLink(ctx, 'flood', 'en');
 });
 
-app.command(['banjir'], (ctx) => {
-  replyCardLink(ctx, 'flood', 'id');
+app.command(['baha'], (ctx) => {
+  replyCardLink(ctx, 'flood', 'tl');
 });
 
 app.command(['fire',], (ctx) => {
@@ -195,7 +191,7 @@ app.command(['fire',], (ctx) => {
 });
 
 app.command(['kebakaran hutan',], (ctx) => {
-  replyCardLink(ctx, 'fire', 'id');
+  replyCardLink(ctx, 'fire', 'tl');
 });
 
 app.command(['earthquake'], (ctx) => {
@@ -203,7 +199,7 @@ app.command(['earthquake'], (ctx) => {
 });
 
 app.command(['gempa'], (ctx) => {
-  replyCardLink(ctx, 'earthquake', 'id');
+  replyCardLink(ctx, 'earthquake', 'tl');
 });
 
 app.command(['haze'], (ctx) => {
@@ -211,7 +207,7 @@ app.command(['haze'], (ctx) => {
 });
 
 app.command(['kabut asap'], (ctx) => {
-  replyCardLink(ctx, 'haze', 'id');
+  replyCardLink(ctx, 'haze', 'tl');
 });
 
 app.command(['volcano'], (ctx) => {
@@ -219,7 +215,7 @@ app.command(['volcano'], (ctx) => {
 });
 
 app.command(['gunung api'], (ctx) => {
-  replyCardLink(ctx, 'volcano', 'id');
+  replyCardLink(ctx, 'volcano', 'tl');
 });
 
 app.command(['wind'], (ctx) => {
@@ -227,7 +223,7 @@ app.command(['wind'], (ctx) => {
 });
 
 app.command(['angin kencang'], (ctx) => {
-  replyCardLink(ctx, 'wind', 'id');
+  replyCardLink(ctx, 'wind', 'tl');
 });
 
 
@@ -236,8 +232,8 @@ app.hears(['Flood'], (ctx) => {
   return replyCardLink(ctx, 'flood', 'en')
 })
 
-app.hears(['Banjir'], (ctx) => {
-  return replyCardLink(ctx, 'flood', 'id')
+app.hears(['Baha'], (ctx) => {
+  return replyCardLink(ctx, 'flood', 'tl')
 })
 
 app.hears(['Earthquake'], (ctx) => {
@@ -245,14 +241,14 @@ app.hears(['Earthquake'], (ctx) => {
 })
 
 app.hears(['Gempa'], (ctx) => {
-  return replyCardLink(ctx, 'earthquake', 'id')
+  return replyCardLink(ctx, 'earthquake', 'tl')
 })
 app.hears(['Forest Fire'], (ctx) => {
   return replyCardLink(ctx, 'fire', 'en')
 })
 
 app.hears(['Kebakaran Hutan'], (ctx) => {
-  return replyCardLink(ctx, 'fire', 'id')
+  return replyCardLink(ctx, 'fire', 'tl')
 })
 
 app.hears(['Haze'], (ctx) => {
@@ -260,7 +256,7 @@ app.hears(['Haze'], (ctx) => {
 })
 
 app.hears(['Kabut Asap'], (ctx) => {
-  return replyCardLink(ctx, 'haze', 'id')
+  return replyCardLink(ctx, 'haze', 'tl')
 })
 
 app.hears(['Volcano'], (ctx) => {
@@ -268,7 +264,7 @@ app.hears(['Volcano'], (ctx) => {
 })
 
 app.hears(['Gunung Api'], (ctx) => {
-  return replyCardLink(ctx, 'volcano', 'id')
+  return replyCardLink(ctx, 'volcano', 'tl')
 })
 
 app.hears(['Extreme Wind'], (ctx) => {
@@ -276,7 +272,7 @@ app.hears(['Extreme Wind'], (ctx) => {
 })
 
 app.hears(['Angin Kencang'], (ctx) => {
-  return replyCardLink(ctx, 'wind', 'id')
+  return replyCardLink(ctx, 'wind', 'tl')
 })
 
 // emergi!
