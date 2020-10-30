@@ -149,10 +149,10 @@ var watch_cards = function(callback){
 
 // start command
 app.command(['start'], (ctx) => {
-  ctx.reply("Kamusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
+  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
 });
 app.command(['mulai'], (ctx) => {
-  ctx.reply("Kamusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
+  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
 });
 
 app.command('report', (ctx) => {
