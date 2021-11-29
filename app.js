@@ -89,7 +89,8 @@ var get_card = function(ctx, lang, callback, disasterType){
   var card_request = {
     "username": ctx.from.id.toString(), //We use the numeric id as this allows telegram replies
     "network": "telegram",
-    "language": lang
+    "language": lang,
+    "network_data": { "chatID": ctx.chat.id.toString() }
   }
 
   // Get a card
