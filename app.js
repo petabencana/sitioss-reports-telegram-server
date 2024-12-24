@@ -157,7 +157,7 @@ app.command(['mulai'], (ctx) => {
 });
 
 app.command('report', (ctx) => {
-  return ctx.reply('Please select disaster to report', Markup
+return ctx.reply('Please select disaster to report on the map', Markup
     .keyboard([
       ['Flood', 'Forest Fire', ],
       ['Earthquake', 'Haze', ],
