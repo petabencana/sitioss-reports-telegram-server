@@ -1,5 +1,5 @@
 // CogniCity Telegram Reports Module
-
+// With Multihazard prompts
 // External modules
 const Telegraf = require('telegraf'),
       request = require('request'),
@@ -112,53 +112,18 @@ var get_card = function(ctx, lang, callback, disasterType){
   });
 }
 
-// Function to watch for udpates to grasp.cards table, received status
-var watch_cards = function(callback){
-     // Connect to db
-     pg.connect(config.PG_CON, function(err, client, done){
-       if (err){
-         logger.error("database err: " + err);
-         done();
-         callback( new Error('Database connection error') );
-         return;
-       }
-       // Return the listen notification
-       client.on('notification', function(msg) {
-         try{
-          logger.info('Msg: ' + msg);
-          logger.info('Payload: ' + msg.payload);
-          var notification = JSON.parse(msg.payload);
-          logger.info('Parse successful');
-          if (notification.cards.network === 'telegram'){
-            logger.info('Received card submission');
-            callback(null, notification.cards);
-          }
-         }
-         catch (e){
-           logger.error('Error processing listen notification from database\n'+e);
-           callback(e);
-
-           return;
-         }
-       });
-
-       // Initiate the listen query
-       client.query("LISTEN watchers");
-     });
-}
-
 // start command
 app.command(['start'], (ctx) => {
-  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
+	ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /ulat upang i-report ang sakuna malapit sa iyo. How are you? I'm disaster bot! Click /report to report disasters near you.");
 });
 app.command(['mulai'], (ctx) => {
-  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /baha upang i-report ang baha malapit sa iyo. How are you? I'm disaster bot! Click /flood to report flooding near you.");
+  ctx.reply("Kumusta ka? Ako si Kalamidad Bot! Pindutin ang /ulat upang i-report ang sakuna malapit sa iyo. How are you? I'm disaster bot! Click /report to report disasters near you.");
 });
 
 app.command('report', (ctx) => {
   return ctx.reply('Please select disaster to report', Markup
     .keyboard([
-      ['Flood'],
+      ['Flood' ,'Earthquake' , 'Volcano' , 'Typhoon'],
     ])
     .oneTime()
     .resize()
@@ -166,10 +131,10 @@ app.command('report', (ctx) => {
   )
 })
 
-app.command('laporkan', (ctx) => {
+app.command('ulat', (ctx) => {
   return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
     .keyboard([
-      ['Baha'], // Row1 with 2 buttons
+      ['Baha' , 'Lindol' , 'Bulkan' , 'Bagyo'], // Row1 with 2 buttons
     ])
     .oneTime()
     .resize()
@@ -186,45 +151,30 @@ app.command(['baha'], (ctx) => {
   replyCardLink(ctx, 'flood', 'tl');
 });
 
-app.command(['fire',], (ctx) => {
-  replyCardLink(ctx, 'fire', 'en');
-});
-
-app.command(['kebakaran hutan',], (ctx) => {
-  replyCardLink(ctx, 'fire', 'tl');
-});
-
-app.command(['earthquake'], (ctx) => {
+app.command(['earthquake',], (ctx) => {
   replyCardLink(ctx, 'earthquake', 'en');
 });
 
-app.command(['gempa'], (ctx) => {
+app.command(['lindol',], (ctx) => {
   replyCardLink(ctx, 'earthquake', 'tl');
-});
-
-app.command(['haze'], (ctx) => {
-  replyCardLink(ctx, 'haze', 'en');
-});
-
-app.command(['kabut asap'], (ctx) => {
-  replyCardLink(ctx, 'haze', 'tl');
 });
 
 app.command(['volcano'], (ctx) => {
   replyCardLink(ctx, 'volcano', 'en');
 });
 
-app.command(['gunung api'], (ctx) => {
+app.command(['bulkan'], (ctx) => {
   replyCardLink(ctx, 'volcano', 'tl');
 });
 
-app.command(['wind'], (ctx) => {
-  replyCardLink(ctx, 'wind', 'en');
+app.command(['typhoon'], (ctx) => {
+  replyCardLink(ctx, 'typhoon', 'en');
 });
 
-app.command(['angin kencang'], (ctx) => {
-  replyCardLink(ctx, 'wind', 'tl');
+app.command(['bagyo'], (ctx) => {
+  replyCardLink(ctx, 'typhoon', 'tl');
 });
+
 
 
 
@@ -236,60 +186,37 @@ app.hears(['Baha'], (ctx) => {
   return replyCardLink(ctx, 'flood', 'tl')
 })
 
-app.hears(['Earthquake'], (ctx) => {
-  return replyCardLink(ctx, 'earthquake', 'en')
-})
+app.hears(['Earthquake',], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'en');
+});
 
-app.hears(['Gempa'], (ctx) => {
-  return replyCardLink(ctx, 'earthquake', 'tl')
-})
-app.hears(['Forest Fire'], (ctx) => {
-  return replyCardLink(ctx, 'fire', 'en')
-})
-
-app.hears(['Kebakaran Hutan'], (ctx) => {
-  return replyCardLink(ctx, 'fire', 'tl')
-})
-
-app.hears(['Haze'], (ctx) => {
-  return replyCardLink(ctx, 'haze', 'en')
-})
-
-app.hears(['Kabut Asap'], (ctx) => {
-  return replyCardLink(ctx, 'haze', 'tl')
-})
+app.hears(['Lindol',], (ctx) => {
+  replyCardLink(ctx, 'earthquake', 'tl');
+});
 
 app.hears(['Volcano'], (ctx) => {
-  return replyCardLink(ctx, 'volcano', 'en')
-})
+  replyCardLink(ctx, 'volcano', 'en');
+});
 
-app.hears(['Gunung Api'], (ctx) => {
-  return replyCardLink(ctx, 'volcano', 'tl')
-})
+app.hears(['Bulkan'], (ctx) => {
+  replyCardLink(ctx, 'volcano', 'tl');
+});
 
-app.hears(['Extreme Wind'], (ctx) => {
-  return replyCardLink(ctx, 'wind', 'en')
-})
+app.hears(['Typhoon'], (ctx) => {
+  replyCardLink(ctx, 'typhoon', 'en');
+});
 
-app.hears(['Angin Kencang'], (ctx) => {
-  return replyCardLink(ctx, 'wind', 'tl')
-})
+app.hears(['Bagyo'], (ctx) => {
+  replyCardLink(ctx, 'typhoon', 'tl');
+});
+
 
 // emergi!
 //app.on('sticker', (ctx) => ctx.reply('👍'));
 
 // Start telegram connection
 app.startPolling();
-logger.info('App is polling Telegram API');
-
-// Start watcing for user reports
-watch_cards(function(err, report){
-  if (!err){
-    var reply = confirmations[report.language]
-    reply += ' ' + config.MAP_PATH + instance_regions[report.report_impl_area] + '/' + report.report_id;
-    app.telegram.sendMessage(parseInt(report.username), reply);
-  }
-});
+logger.info('App is polling Telegram API');;
 
 function replyCardLink(ctx, disasterType, lang) {
   logger.debug('Received report request:'+disasterType);
@@ -304,4 +231,3 @@ function replyCardLink(ctx, disasterType, lang) {
     }
   }, disasterType);
 }
-
