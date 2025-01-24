@@ -132,7 +132,7 @@ app.command('report', (ctx) => {
 })
 
 app.command('ulat', (ctx) => {
-  return ctx.reply('Silahkan pilih bencana yang ingin kamu laporkan', Markup
+  return ctx.reply('Piliin ang kalamidad na nais mong iulat.', Markup
     .keyboard([
       ['Baha' , 'Lindol' , 'Bulkan' , 'Bagyo'], // Row1 with 2 buttons
     ])
