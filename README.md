@@ -1,9 +1,9 @@
 ## DEPRECATED
 
-New Telegram chatbots should use the AWS Lambda functions: https://github.com/urbanriskmap/cognicity-reports-telegram-lambda
+New Telegram chatbots should use the AWS Lambda functions: https://github.com/urbanriskmap/sitioss-reports-telegram-lambda
 
-# cognicity-reports-telegram
-Telegram support for CogniCity GRASP
+# sitioss-reports-telegram
+Telegram support for Siti OSS GRASP
 
 ### Install
 `npm install`
